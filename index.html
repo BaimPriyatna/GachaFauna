@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Animal Card</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Roboto&display=swap');
+
+  body {
+    margin: 0;
+    background: linear-gradient(135deg, #2c5364);
+    font-family: 'Roboto', sans-serif;
+    display: absolute;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .card {
+    background: linear-gradient(145deg, #1e1e2f, #2a2a44);
+    width: 320px;
+    height: 450px;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4), inset 0 0 15px #1f2937;
+    color: #eee;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border: 2px solid transparent;
+  }
+
+  .card-header {
+    position: relative;
+    height: 180px;
+    clip-path: polygon(0 0, 100% 0, 100% 85%, 85% 100%, 0 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .icon {
+    font-size: 5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .card-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.8rem;
+    margin: 16px 20px 4px 20px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    user-select: none;
+  }
+
+  .card-subtitle {
+    font-size: 0.9rem;
+    margin: 0 20px 12px 20px;
+    color: #ffff;
+    font-weight: 500;
+    user-select: none;
+  }
+
+  .card-description {
+    margin: 0 20px 16px 20px;
+    font-size: 1rem;
+    line-height: 1.3;
+    color: #ccc;
+    min-height: 60px;
+  }
+
+  .card-stats {
+    display: flex;
+    justify-content: space-around;
+    margin: auto 20px 20px 20px;
+    gap: 10px;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.85rem;
+    color: #ffffff;
+  }
+
+  .stat .value {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #ffffff;
+  }
+
+  .stat-bar {
+    margin-top: 6px;
+    width: 60px;
+    height: 8px;
+    background: #999;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: inset 0 0 4px #222;
+  }
+
+  .stat-bar-fill {
+    height: 100%;
+    background: #ffffff;
+    border-radius: 4px;
+  }
+
+  .card.mythic .card-header {
+    background: linear-gradient(135deg, #3b0a0a, #5b1a1a);
+  }
+  .card.mythic {
+    border-color: #ff4444;
+  }
+  .card.mythic .card-title {
+    color: #ff4444;
+  }
+
+  .card.legendary .card-header {
+    background: linear-gradient(135deg, #6b4e00, #a87800);
+  }
+  .card.legendary {
+    border-color: gold;
+  }
+  .card.legendary .card-title {
+    color: gold;
+  }
+
+  .card.epic .card-header {
+    background: linear-gradient(135deg, #3a1a4d, #5b2a7d);
+  }
+  .card.epic {
+    border-color: #c678dd;
+  }
+  .card.epic .card-title {
+    color: #c678dd;
+  }
+
+  .card.rare .card-header {
+    background: linear-gradient(135deg, #123b5b, #1d4d7d);
+  }
+  .card.rare {
+    border-color: #4dc0ff;
+  }
+  .card.rare .card-title {
+    color: #4dc0ff;
+  }
+
+  .card.uncommon .card-header {
+    background: linear-gradient(135deg, #1f4d2f, #2f7d4d);
+  }
+  .card.uncommon {
+    border-color: #44ff88;
+  }
+  .card.uncommon .card-title {
+    color: #44ff88;
+  }
+  
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
+
+@keyframes spin-zoom {
+  0% {
+    transform: scale(0.2) rotateY(0deg);
+    opacity: 0.3;
+  }
+  80% {
+    transform: scale(1.1) rotateY(1000deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotateY(1080deg);
+    opacity: 1;
+  }
+}
+
+@keyframes scale-up {
+  0% { transform: scale(0.2); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.spin-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 320px;
+  height: 450px;
+  perspective: 1200px;
+  transition: opacity 0.5s ease-out;
+  z-index: 999;
+}
+
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  animation: spin-zoom 2s ease-out forwards;
+}
+
+.card-front, .card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-front {
+  background: radial-gradient(circle, #ffff, #ffff);
+  box-shadow: 0 0 30px 12px rgba(255, 255, 255, 0.3);
+}
+
+.card-back {
+  background: linear-gradient(135deg, #1e1e2f, #2a2a44);
+  transform: rotateY(180deg);
+}
+
+/* Tanda tanya */
+.card-back .question-mark {
+  font-size: 5rem;
+  font-family: 'Orbitron', sans-serif;
+  color: #fff;
+  text-shadow: 0 0 12px #fff;
+}
+
+.card.reveal {
+  animation: scale-up 0.4s ease-out;
+}
+.fade-in {
+  opacity: 0;
+  transition: opacity 3s ease-in;
+}
+
+.fade-in.show {
+  opacity: 1;
+}
+#card-container.rewards-view {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  padding: 80px 20px 20px;
+  justify-items: center;
+}
+</style>
+</head>
+<body>
+  <button id="close-rewards" onclick="hideRewards()" style="
+  display: none;
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  padding: 6px 14px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  cursor: pointer;
+  z-index: 999;
+">×</button>
+  <button onclick="showRewards()" style="position: fixed; top: 20px; right: 20px; padding: 10px 18px; font-size: 1rem; border-radius: 8px; background: #ffc107; color: black; border: none; box-shadow: 0 4px 8px rgba(0,0,0,0.3); cursor: pointer;">Hadiah</button>
+  <div id="card-container" style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;"></div>
+<div id="draw-wrapper" style="position: fixed; bottom: 20px; width: 100%; text-align: center;">
+  <button id="draw-btn" onclick="drawCard()" style="padding: 12px 24px; font-size: 1.2rem; border-radius: 10px; background: #28a745; color: white; border: none; box-shadow: 0 4px 8px rgba(0,0,0,0.3); cursor: pointer;">Draw Card</button>
+</div>
+  <script>
+function showRewards() {
+  container.style.position = "relative";  // pastikan ini ada
+  container.innerHTML = "";
+  container.classList.add("rewards-view");
+
+  const drawBtn = document.getElementById("draw-wrapper");
+  const closeBtn = document.getElementById("close-rewards");
+
+  drawBtn.style.display = "none";
+  closeBtn.style.display = "block";
+
+  const rewards = JSON.parse(localStorage.getItem("rewardData") || "[]");
+  if (rewards.length === 0) {
+    const p = document.createElement("p");
+    p.style.color = "white";
+    p.textContent = "Belum ada hadiah yang didapat.";
+    container.appendChild(p);
+    return;
+  }
+
+  rewards.forEach(card => {
+    const cardElement = createRewardCardElement(card);
+    container.appendChild(cardElement);
+  });
+}
+function hideRewards() {
+  const drawBtn = document.getElementById("draw-wrapper");
+  const closeBtn = document.getElementById("close-rewards");
+
+  drawBtn.style.display = "block";
+  closeBtn.style.display = "none";
+  container.classList.remove("rewards-view");
+  container.innerHTML = "";
+}
+function showSpinningCard(callback) {
+  container.innerHTML = "";
+
+  const cardWrapper = document.createElement("div");
+  cardWrapper.className = "spin-wrapper";
+
+  const inner = document.createElement("div");
+  inner.className = "card-inner";
+
+  inner.innerHTML = `
+    <div class="card-front"></div>
+    <div class="card-back">
+      <div class="question-mark">?</div>
+    </div>
+  `;
+
+  cardWrapper.appendChild(inner);
+  container.appendChild(cardWrapper);
+
+  // Tunggu animasi selesai lalu fade out kartu putih
+  setTimeout(() => {
+    cardWrapper.style.transition = "opacity 0.5s ease-out";
+    cardWrapper.style.opacity = "0";
+
+    // Setelah fade out selesai, hapus dan panggil callback
+    setTimeout(() => {
+      container.innerHTML = "";
+      callback();
+    }, 500); // waktu harus sesuai dengan transition di atas
+  }, 3000); // waktu animasi spin
+}
+function drawCard() {
+  showSpinningCard(() => {
+    const rarityChances = [
+      { rarity: "mythic", chance: 1 },
+      { rarity: "legendary", chance: 4 },
+      { rarity: "epic", chance: 10 },
+      { rarity: "rare", chance: 25 },
+      { rarity: "uncommon", chance: 60 },
+    ];
+
+    let pool = [];
+    rarityChances.forEach(({ rarity, chance }) => {
+      for (let i = 0; i < chance; i++) pool.push(rarity);
+    });
+
+    const selectedRarity = pool[Math.floor(Math.random() * pool.length)];
+    const filteredCards = animalCards.filter(card => card.rarity === selectedRarity);
+    const chosenCard = filteredCards[Math.floor(Math.random() * filteredCards.length)];
+
+    const cardElement = createCardElement(chosenCard);
+    cardElement.classList.add("fade-in");
+    cardElement.style.position = "absolute";
+    cardElement.style.top = "50%";
+    cardElement.style.left = "50%";
+    cardElement.style.transform = "translate(-50%, -50%)";
+    cardElement.style.zIndex = "999";
+    container.appendChild(cardElement);
+    requestAnimationFrame(() => cardElement.classList.add("show"));
+
+    // Simpan hasil ke localStorage
+    let rewardHistory = JSON.parse(localStorage.getItem("rewardData") || "[]");
+    rewardHistory.push(chosenCard);
+    localStorage.setItem("rewardData", JSON.stringify(rewardHistory));
+  });
+}
+function displayCard(card) {
+  const div = document.createElement("div");
+  div.className = `card ${card.rarity}`;
+  div.innerHTML = `
+    <div class="card-header" style="font-size: 64px; text-align: center; margin-bottom: 12px;">${card.emoji}</div>
+    <h1 class="card-title">${card.id.replace(/-/g, ' ')}</h1>
+    <h2 class="card-subtitle">${card.rarity.charAt(0).toUpperCase() + card.rarity.slice(1)} </h2>
+    <p class="card-description">${card.description}</p>
+    <div class="card-stats">
+      ${["attack", "defense", "health"].map(stat => `
+        <div class="stat">
+          <span>${stat.charAt(0).toUpperCase() + stat.slice(1)}</span>
+          <div class="stat-bar">
+            <div class="stat-bar-fill" style="width: ${card.stats[stat]}%;"></div>
+          </div>
+          <span class="value">${card.stats[stat]}</span>
+        </div>
+      `).join("")}
+    </div>
+  `;
+  container.appendChild(div);
+}
+ const animalCards = [
+  {
+    id: "dragon",
+    emoji: "🐉",
+    rarity: "mythic",
+    description: "Ular terbang",
+    stats: { attack: 87, defense: 97, health: 92 }
+  },
+  {
+    id: "unicorn",
+    emoji: "🦄",
+    rarity: "mythic",
+    description: "Kirain cuma ada di negri dongeng",
+    stats: { attack: 81, defense: 96, health: 87 }
+  },
+  {
+    id: "t-rex",
+    emoji: "🦖",
+    rarity: "mythic",
+    description: "Rawrrrr",
+    stats: { attack: 96, defense: 91, health: 87 }
+  },
+  {
+    id: "dinosaurus",
+    emoji: "🦕",
+    rarity: "mythic",
+    description: "Bro awas ada meteor",
+    stats: { attack: 86, defense: 82, health: 97 }
+  },
+  {
+    id: "coral",
+    emoji: "🪸",
+    rarity: "mythic",
+    description: "Langka gara gara manusia",
+    stats: { attack: 82, defense: 97, health: 88 }
+  },
+  {
+    id: "seal",
+    emoji: "🦭",
+    rarity: "mythic",
+    description: "Gemoy",
+    stats: { attack: 93, defense: 84, health: 98 }
+  },
+  {
+    id: "peacock",
+    emoji: "🦚",
+    rarity: "mythic",
+    description: "Bulu nya indah",
+    stats: { attack: 82, defense: 95, health: 99 }
+  },
+  {
+    id: "lion",
+    emoji: "🦁",
+    rarity: "legendary",
+    description: "Raja hutan",
+    stats: { attack: 85, defense: 81, health: 87 }
+  },
+  {
+    id: "tiger",
+    emoji: "🐅",
+    rarity: "legendary",
+    description: "Ganas",
+    stats: { attack: 76, defense: 89, health: 86 }
+  },
+  {
+    id: "elephant",
+    emoji: "🐘",
+    rarity: "legendary",
+    description: "Sihidung panjang bertelinga besar",
+    stats: { attack: 84, defense: 82, health: 80 }
+  },
+  {
+    id: "gorilla",
+    emoji: "🦍",
+    rarity: "legendary",
+    description: "Kuat dan sedikit pintar",
+    stats: { attack: 78, defense: 83, health: 82 }
+  },
+  {
+    id: "orangutan",
+    emoji: "🦧",
+    rarity: "legendary",
+    description: "Manusia purba",
+    stats: { attack: 72, defense: 83, health: 70 }
+  },
+  {
+    id: "giraffe",
+    emoji: "🦒",
+    rarity: "legendary",
+    description: "Leher panjang buat apa?",
+    stats: { attack: 70, defense: 81, health: 82 }
+  },
+  {
+    id: "rhinoceros",
+    emoji: "🦏",
+    rarity: "legendary",
+    description: "Hampir punah gara gara manusia",
+    stats: { attack: 89, defense: 75, health: 90 }
+  },
+  {
+    id: "mammoth",
+    emoji: "🦣",
+    rarity: "legendary",
+    description: "Udah punah",
+    stats: { attack: 85, defense: 72, health: 73 }
+  },
+  {
+    id: "camel",
+    emoji: "🐫",
+    rarity: "legendary",
+    description: "Suka makan kaktus",
+    stats: { attack: 73, defense: 74, health: 86 }
+  },
+  {
+    id: "wolf",
+    emoji: "🐺",
+    rarity: "epic",
+    description: "Auuuuuuuu",
+    stats: { attack: 65, defense: 60, health: 67 }
+  },
+  {
+    id: "bear",
+    emoji: "🐻",
+    rarity: "epic",
+    description: "Marsha and the bear",
+    stats: { attack: 65, defense: 65, health: 62 }
+  },
+  {
+    id: "polarbear",
+    emoji: "🐻‍❄️",
+    rarity: "epic",
+    description: "Dingin cuyy",
+    stats: { attack: 71, defense: 76, health: 76 }
+  },
+  {
+    id: "fox",
+    emoji: "🦊",
+    rarity: "epic",
+    description: "Merk permen",
+    stats: { attack: 63, defense: 66, health: 79 }
+  },
+  {
+    id: "raccoon",
+    emoji: "🦝",
+    rarity: "epic",
+    description: "Doraemon",
+    stats: { attack: 71, defense: 77, health: 75 }
+  },
+  {
+    id: "zebra",
+    emoji: "🦓",
+    rarity: "epic",
+    description: "Hewan apa yang jadi penanda jalan? ya, zebra-cross",
+    stats: { attack: 78, defense: 76, health: 63 }
+  },
+  {
+    id: "horse",
+    emoji: "🐴",
+    rarity: "epic",
+    description: "Dulu buat perang, sekarang jadi delman",
+    stats: { attack: 63, defense: 73, health: 62 }
+  },
+  {
+    id: "moose",
+    emoji: "🫎",
+    rarity: "epic",
+    description: "Bapak nya rusa",
+    stats: { attack: 79, defense: 72, health: 64 }
+  },
+  {
+    id: "boar",
+    emoji: "🐗",
+    rarity: "epic",
+    description: "Celeng",
+    stats: { attack: 76, defense: 69, health: 74 }
+  },
+  {
+    id: "sloth",
+    emoji: "🦥",
+    rarity: "epic",
+    description: "Laaammmmmbaaaatttt",
+    stats: { attack: 60, defense: 78, health: 68 }
+  },
+  {
+    id: "kangaroo",
+    emoji: "🦘",
+    rarity: "epic",
+    description: "Lompat lompat, pinter boxing",
+    stats: { attack: 74, defense: 72, health: 79 }
+  },
+  {
+    id: "badger",
+    emoji: "🦡",
+    rarity: "epic",
+    description: "Luwak white coffee",
+    stats: { attack: 71, defense: 71, health: 69 }
+  },
+  {
+    id: "otter",
+    emoji: "🦦",
+    rarity: "epic",
+    description: "Suka bikin bendungan",
+    stats: { attack: 76, defense: 72, health: 75 }
+  },
+  {
+    id: "skunk",
+    emoji: "🦨",
+    rarity: "epic",
+    description: "Bauuuuu",
+    stats: { attack: 77, defense: 70, health: 64 }
+  },
+  {
+    id: "koala",
+    emoji: "🐨",
+    rarity: "rare",
+    description: "Pemalass",
+    stats: { attack: 59, defense: 47, health: 59 }
+  },
+  {
+    id: "panda",
+    emoji: "🐼",
+    rarity: "rare",
+    description: "Suka makan bambu",
+    stats: { attack: 63, defense: 64, health: 45 }
+  },
+  {
+    id: "deer",
+    emoji: "🦌",
+    rarity: "rare",
+    description: "Sering ke tabrak",
+    stats: { attack: 65, defense: 61, health: 46 }
+  },
+  {
+    id: "llama",
+    emoji: "🦙",
+    rarity: "rare",
+    description: "Cuihhh",
+    stats: { attack: 54, defense: 64, health: 51 }
+  },
+  {
+    id: "bat",
+    emoji: "🦇",
+    rarity: "rare",
+    description: "Batman",
+    stats: { attack: 51, defense: 45, health: 63 }
+  },
+  {
+    id: "eagle",
+    emoji: "🦅",
+    rarity: "rare",
+    description: "United States",
+    stats: { attack: 50, defense: 47, health: 51 }
+  },
+  {
+    id: "owl",
+    emoji: "🦉",
+    rarity: "rare",
+    description: "Siang tidur, malam berburu ",
+    stats: { attack: 47, defense: 65, health: 58 }
+  },
+  {
+    id: "parrot",
+    emoji: "🦜",
+    rarity: "rare",
+    description: "Burung kakak tua... hinggap di jendela",
+    stats: { attack: 51, defense: 56, health: 55 }
+  },
+  {
+    id: "swan",
+    emoji: "🦢",
+    rarity: "rare",
+    description: "Sering ngejar, galak",
+    stats: { attack: 58, defense: 54, health: 48 }
+  },
+  {
+    id: "flamingo",
+    emoji: "🦩",
+    rarity: "rare",
+    description: "Pinky boy",
+    stats: { attack: 60, defense: 48, health: 61 }
+  },
+  {
+    id: "turkey",
+    emoji: "🦃",
+    rarity: "rare",
+    description: "Korban festival Thanksgiving",
+    stats: { attack: 47, defense: 59, health: 48 }
+  },
+  {
+    id: "penguin",
+    emoji: "🐧",
+    rarity: "rare",
+    description: "Burung tapi gabisa terbang",
+    stats: { attack: 48, defense: 62, health: 48 }
+  },
+  {
+    id: "turtle",
+    emoji: "🐢",
+    rarity: "rare",
+    description: "Ayo Balapan sampai rumah",
+    stats: { attack: 25, defense: 100, health: 90 }
+  },
+  {
+    id: "duck",
+    emoji: "🦆",
+    rarity: "rare",
+    description: "kwek kwek kwek",
+    stats: { attack: 60, defense: 56, health: 65 }
+  },
+  {
+    id: "dove",
+    emoji: "🕊️",
+    rarity: "rare",
+    description: "Tukang Pos",
+    stats: { attack: 58, defense: 59, health: 63 }
+  },
+  {
+    id: "dodo",
+    emoji: "🦤",
+    rarity: "rare",
+    description: "Udah punah, gara gara gabisa terbang?",
+    stats: { attack: 49, defense: 51, health: 48 }
+  },
+  {
+    id: "dolphin",
+    emoji: "🐬",
+    rarity: "rare",
+    description: "Pemabuk",
+    stats: { attack: 50, defense: 46, health: 47 }
+  },
+  {
+    id: "shark",
+    emoji: "🦈",
+    rarity: "rare",
+    description: "Awas ada hiuuu",
+    stats: { attack: 65, defense: 59, health: 59 }
+  },
+  {
+    id: "whale",
+    emoji: "🐳",
+    rarity: "rare",
+    description: "Hewan terbesar?",
+    stats: { attack: 58, defense: 57, health: 50 }
+  },
+  {
+    id: "lobster",
+    emoji: "🦞",
+    rarity: "rare",
+    description: "Makanan seafood",
+    stats: { attack: 54, defense: 60, health: 50 }
+  },
+  {
+    id: "hamster",
+    emoji: "🐹",
+    rarity: "uncommon",
+    description: "Gerak dikit mati",
+    stats: { attack: 34, defense: 24, health: 22 }
+  },
+  {
+    id: "bunny",
+    emoji: "🐰",
+    rarity: "uncommon",
+    description: "Lari cepat tapi kalah sama kura kura",
+    stats: { attack: 23, defense: 38, health: 39 }
+  },
+  {
+    id: "rabbit",
+    emoji: "🐇",
+    rarity: "uncommon",
+    description: "Bwabwabwa",
+    stats: { attack: 30, defense: 35, health: 22 }
+  },
+  {
+    id: "mouse",
+    emoji: "🐁",
+    rarity: "uncommon",
+    description: "Temen nya keyboard",
+    stats: { attack: 50, defense: 40, health: 43 }
+  },
+  {
+    id: "rat",
+    emoji: "🐀",
+    rarity: "uncommon",
+    description: "Tikus tikus kantor",
+    stats: { attack: 31, defense: 43, health: 42 }
+  },
+  {
+    id: "cat",
+    emoji: "🐈",
+    rarity: "uncommon",
+    description: "Namanya kucing tapi hobinya mengeong",
+    stats: { attack: 42, defense: 30, health: 49 }
+  },
+  {
+    id: "poodle",
+    emoji: "🐩",
+    rarity: "uncommon",
+    description: "Mirip boneka",
+    stats: { attack: 26, defense: 29, health: 41 }
+  },
+  {
+    id: "dog",
+    emoji: "🐕",
+    rarity: "uncommon",
+    description: "Guk guk guk",
+    stats: { attack: 40, defense: 49, health: 44 }
+  },
+  {
+    id: "guidedog",
+    emoji: "🦮",
+    rarity: "uncommon",
+    description: "Itu dikanan mu kanan mu",
+    stats: { attack: 28, defense: 38, health: 37 }
+  },
+  {
+    id: "servicedog",
+    emoji: "🐕‍🦺",
+    rarity: "uncommon",
+    description: "Anjing aja setia masa kamu...",
+    stats: { attack: 40, defense: 37, health: 21 }
+  },
+  {
+    id: "pig",
+    emoji: "🐖",
+    rarity: "uncommon",
+    description: "Suka makan kotoran",
+    stats: { attack: 34, defense: 37, health: 35 }
+  },
+  {
+    id: "donkey",
+    emoji: "🫏",
+    rarity: "uncommon",
+    description: "Hihhaaaa",
+    stats: { attack: 40, defense: 28, health: 27 }
+  },
+  {
+    id: "cow",
+    emoji: "🐄",
+    rarity: "uncommon",
+    description: "Moooowwww",
+    stats: { attack: 50, defense: 38, health: 36 }
+  },
+  {
+    id: "bull",
+    emoji: "🐂",
+    rarity: "uncommon",
+    description: "Redbull",
+    stats: { attack: 44, defense: 20, health: 21 }
+  },
+  {
+    id: "buffalo",
+    emoji: "🐃",
+    rarity: "uncommon",
+    description: "El matador",
+    stats: { attack: 39, defense: 34, health: 38 }
+  },
+  {
+    id: "bison",
+    emoji: "🦬",
+    rarity: "uncommon",
+    description: "Hampir punah di Amerika",
+    stats: { attack: 42, defense: 34, health: 28 }
+  },
+  {
+    id: "ram",
+    emoji: "🐏",
+    rarity: "uncommon",
+    description: "Kambing biri biri",
+    stats: { attack: 37, defense: 44, health: 48 }
+  },
+  {
+    id: "sheep",
+    emoji: "🐑",
+    rarity: "uncommon",
+    description: "Sering dijadiin baju",
+    stats: { attack: 28, defense: 41, health: 38 }
+  },
+  {
+    id: "goat",
+    emoji: "🐐",
+    rarity: "uncommon",
+    description: "Greatest Of All time",
+    stats: { attack: 41, defense: 28, health: 29 }
+  },
+  {
+    id: "squirrel",
+    emoji: "🐿️",
+    rarity: "uncommon",
+    description: "Kau bisa mendaratkan pesawat di gigi nya",
+    stats: { attack: 31, defense: 45, health: 20 }
+  },
+  {
+    id: "beaver",
+    emoji: "🦫",
+    rarity: "uncommon",
+    description: "Suka bikin bendungan",
+    stats: { attack: 38, defense: 29, health: 23 }
+  },
+  {
+    id: "rooster",
+    emoji: "🐓",
+    rarity: "uncommon",
+    description: "Ayam jago",
+    stats: { attack: 44, defense: 47, health: 27 }
+  },
+  {
+    id: "chicken",
+    emoji: "🐔",
+    rarity: "uncommon",
+    description: "Pesan ayam chicken nya satu",
+    stats: { attack: 21, defense: 44, health: 21 }
+  },
+  {
+    id: "chick",
+    emoji: "🐣",
+    rarity: "uncommon",
+    description: "Anak ayam dikejar musang",
+    stats: { attack: 28, defense: 21, health: 25 }
+  },
+  {
+    id: "fish",
+    emoji: "🐟",
+    rarity: "uncommon",
+    description: "Blub blub blub",
+    stats: { attack: 21, defense: 33, health: 26 }
+  },
+  {
+    id: "tropicalfish",
+    emoji: "🐠",
+    rarity: "uncommon",
+    description: "Banyak jenis nya",
+    stats: { attack: 22, defense: 20, health: 50 }
+  },
+  {
+    id: "blowfish",
+    emoji: "🐡",
+    rarity: "uncommon",
+    description: "Korban lumba lumba",
+    stats: { attack: 30, defense: 48, health: 24 }
+  },
+  {
+    id: "shrimp",
+    emoji: "🦐",
+    rarity: "uncommon",
+    description: "Otak udang",
+    stats: { attack: 20, defense: 44, health: 21 }
+  },
+  {
+    id: "crab",
+    emoji: "🦀",
+    rarity: "uncommon",
+    description: "Uang uang uang",
+    stats: { attack: 42, defense: 38, health: 41 }
+  },
+  {
+    id: "squid",
+    emoji: "🦑",
+    rarity: "uncommon",
+    description: "Squidward tentacle",
+    stats: { attack: 23, defense: 43, health: 45 }
+  },
+  {
+    id: "octopus",
+    emoji: "🐙",
+    rarity: "uncommon",
+    description: "Cumi cumi atau gurita?",
+    stats: { attack: 23, defense: 32, health: 21 }
+  },
+  {
+    id: "scorpion",
+    emoji: "🦂",
+    rarity: "uncommon",
+    description: "Mirip lobster cuma ada racun nya di ekor",
+    stats: { attack: 35, defense: 37, health: 27 }
+  },
+  {
+    id: "spider",
+    emoji: "🕷️",
+    rarity: "uncommon",
+    description: "Spiderman",
+    stats: { attack: 46, defense: 20, health: 29 }
+  },
+  {
+    id: "snail",
+    emoji: "🐌",
+    rarity: "uncommon",
+    description: "Siput turbo",
+    stats: { attack: 50, defense: 47, health: 37 }
+  },
+  {
+    id: "ant",
+    emoji: "🐜",
+    rarity: "uncommon",
+    description: "Kecil kecil pekerja keras",
+    stats: { attack: 50, defense: 27, health: 49 }
+  },
+  {
+    id: "cricket",
+    emoji: "🦗",
+    rarity: "uncommon",
+    description: "Krik krik krik krik",
+    stats: { attack: 31, defense: 23, health: 25 }
+  },
+  {
+    id: "beetle",
+    emoji: "🪲",
+    rarity: "uncommon",
+    description: "Kumbang",
+    stats: { attack: 27, defense: 26, health: 47 }
+  },
+  {
+    id: "mosquito",
+    emoji: "🦟",
+    rarity: "uncommon",
+    description: "Ngingggggggg",
+    stats: { attack: 27, defense: 31, health: 45 }
+  },
+  {
+    id: "cockroach",
+    emoji: "🪳",
+    rarity: "uncommon",
+    description: "Mode terbang nya bahaya",
+    stats: { attack: 36, defense: 38, health: 35 }
+  },
+  {
+    id: "fly",
+    emoji: "🪰",
+    rarity: "uncommon",
+    description: "Laler dipager warwerwor",
+    stats: { attack: 22, defense: 43, health: 29 }
+  },
+  {
+    id: "bee",
+    emoji: "🐝",
+    rarity: "uncommon",
+    description: "Suka ngejar kalo di usik",
+    stats: { attack: 34, defense: 39, health: 47 }
+  },
+  {
+    id: "ladybug",
+    emoji: "🐞",
+    rarity: "uncommon",
+    description: "Kumbang bintik bintik",
+    stats: { attack: 40, defense: 30, health: 36 }
+  },
+  {
+    id: "butterfly",
+    emoji: "🦋",
+    rarity: "uncommon",
+    description: "Mentega terbang",
+    stats: { attack: 47, defense: 28, health: 41 }
+  },
+  {
+    id: "caterpillar",
+    emoji: "🐛",
+    rarity: "uncommon",
+    description: "Ulat bukan Ular",
+    stats: { attack: 49, defense: 41, health: 21 }
+  },
+  {
+    id: "worm",
+    emoji: "🪱",
+    rarity: "uncommon",
+    description: "Umpan mancing",
+    stats: { attack: 21, defense: 32, health: 35 }
+  },
+  {
+    id: "microbe",
+    emoji: "🦠",
+    rarity: "uncommon",
+    description: "Ga keliatan",
+    stats: { attack: 25, defense: 37, health: 30 }
+  },
+  {
+    id: "Oyster",
+    emoji: "🦪",
+    rarity: "uncommon",
+    description: "Perlu rasa sakit untuk menghasilkan sesuatu yang indah",
+    stats: { attack: 40, defense: 25, health: 10 }
+  },
+];
+
+    const container = document.getElementById("card-container");
+
+function createCardElement(card) {
+  const div = document.createElement("div");
+  div.className = `card ${card.rarity}`;
+  div.id = `card-${card.id}`;
+  div.style.width = "320px";
+  div.style.height = "450px";
+  div.style.borderRadius = "20px";
+  div.style.color = "#eee";
+  div.style.padding = "16px";
+  div.style.boxShadow = "0 4px 15px rgba(0,0,0,0.3)";
+  div.style.overflow = "hidden";
+
+  div.innerHTML = `
+    <div class="card-header" style="font-size: 64px; text-align: center; margin-bottom: 12px;">${card.emoji}</div>
+    <h1 class="card-title" style="font-size: 1.8rem; margin: 0 0 4px; text-align: center;">${card.id.replace(/-/g, ' ')}</h1>
+    <h2 class="card-subtitle" style="font-size: 0.95rem; margin: 0 0 12px; color: #ccc; text-align: center;">${card.rarity.charAt(0).toUpperCase() + card.rarity.slice(1)} </h2>
+    <p class="card-description" style="font-size: 1rem; margin-bottom: 12px;">${card.description}</p>
+    <div class="card-stats" style="display: flex; gap: 10px; justify-content: space-between;">
+      ${["attack", "defense", "health"].map(stat => `
+        <div class="stat" style="flex: 1; text-align: center;">
+          <span style="font-size: 0.9rem;">${stat.charAt(0).toUpperCase() + stat.slice(1)}</span>
+          <div class="stat-bar" style="margin: 4px auto 2px; width: 100%; height: 8px; background: #444; border-radius: 4px;">
+            <div class="stat-bar-fill" style="width: ${card.stats[stat]}%; height: 100%; background: #fff; border-radius: 4px;"></div>
+          </div>
+          <span class="value" style="font-size: 1rem;">${card.stats[stat]}</span>
+        </div>
+      `).join("")}
+    </div>
+  `;
+
+  return div;
+}
+function createRewardCardElement(card) {
+  const div = document.createElement("div");
+  div.className = `card ${card.rarity}`;
+  div.id = `card-${card.id}`;
+  div.style.width = "120px";
+  div.style.height = "169px";
+  div.style.borderRadius = "15px";
+  div.style.color = "#eee";
+  div.style.padding = "10px";
+  div.style.boxShadow = "0 4px 12px rgba(0,0,0,0.3)";
+  div.style.overflow = "hidden";
+
+  div.innerHTML = `
+    <div class="card-header" style="font-size: 32px; text-align: center; margin-bottom: 6px;">${card.emoji}</div>
+    <h1 class="card-title" style="font-size: 0.8rem; margin: 0 0 4px; text-align: center;">${card.id.replace(/-/g, ' ')}</h1>
+    <h2 class="card-subtitle" style="font-size: 0.65rem; margin: 0 0 6px; color: #ccc; text-align: center;">${card.rarity.charAt(0).toUpperCase() + card.rarity.slice(1)}</h2>
+    <div class="card-stats" style="display: flex; gap: 4px; justify-content: space-between;">
+      ${["attack", "defense", "health"].map(stat => `
+        <div class="stat" style="flex: 1; text-align: center;">
+          <span style="font-size: 0.55rem;">${stat.charAt(0).toUpperCase() + stat.slice(1)}</span>
+          <div class="stat-bar" style="margin: 2px auto 2px; width: 100%; height: 4px; background: #444; border-radius: 3px;">
+            <div class="stat-bar-fill" style="width: ${card.stats[stat]}%; height: 100%; background: #ffff; border-radius: 3px;"></div>
+          </div>
+          <span class="value" style="font-size: 0.6rem;">${card.stats[stat]}</span>
+        </div>
+      `).join("")}
+    </div>
+  `;
+
+  return div;
+}
+  </script>
+</body>
+</html>
