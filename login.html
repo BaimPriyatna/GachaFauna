@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Fauna Gacha Login</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
+  body {
+    margin: 0;
+    background: linear-gradient(135deg, #c1dfc4 0%, #deecdd 100%);
+    font-family: 'Fredoka One', cursive;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: #2f4f4f;
+  }
+  .login-container {
+    background: white;
+    padding: 40px 50px;
+    border-radius: 25px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    text-align: center;
+    max-width: 360px;
+    width: 90%;
+  }
+  h1 {
+    margin-bottom: 30px;
+    font-size: 2.5rem;
+    color: #3a7d44;
+    text-shadow: 1px 1px 4px #a5d6a7;
+  }
+  input[type="text"] {
+    width: 100%;
+    padding: 15px 12px;
+    font-size: 1.2rem;
+    border: 2px solid #67b26f;
+    border-radius: 15px;
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+  input[type="text"]:focus {
+    border-color: #4ca2cd;
+  }
+  button {
+    margin-top: 25px;
+    background: linear-gradient(145deg, #67b26f, #4ca2cd);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    padding: 15px 40px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(76, 162, 205, 0.5);
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+  }
+  button:hover {
+    background: linear-gradient(145deg, #4ca2cd, #67b26f);
+    box-shadow: 0 10px 28px rgba(76, 162, 205, 0.8);
+  }
+  .error-message {
+    color: #d94e4e;
+    margin-top: 15px;
+    font-weight: bold;
+    display: none;
+  }
+</style>
+</head>
+<body>
+  <div class="login-container">
+    <h1>Fauna Gacha Login</h1>
+    <input type="text" id="nickname-input" placeholder="Enter your nickname" maxlength="20" autocomplete="off" />
+    <button id="login-btn">Login</button>
+    <div class="error-message" id="error-msg">Please enter a nickname</div>
+  </div>
+
+  <script>
+    const nicknameInput = document.getElementById('nickname-input');
+    const loginBtn = document.getElementById('login-btn');
+    const errorMsg = document.getElementById('error-msg');
+
+    loginBtn.addEventListener('click', () => {
+      const nickname = nicknameInput.value.trim();
+      if (!nickname) {
+        errorMsg.style.display = 'block';
+        return;
+      }
+      errorMsg.style.display = 'none';
+      // Save nickname
+      localStorage.setItem('faunaGachaNickname', nickname);
+
+      // Initialize coins for this nickname if not exists
+      const coinsKey = 'faunaGachaCoins_' + nickname;
+      if (localStorage.getItem(coinsKey) === null) {
+        localStorage.setItem(coinsKey, '100'); // default coins
+      }
+      // Redirect to game page
+      window.location.href = 'index.html';
+    });
+  </script>
+</body>
+</html>
+

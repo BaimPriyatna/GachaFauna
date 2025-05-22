@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Fauna Gacha Game</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+    font-family: 'Fredoka One', cursive;
+    color: #2f4f4f;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+  header {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    padding: 20px 40px;
+    margin-bottom: 40px;
+    width: 100%;
+    max-width: 480px;
+    box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  header h1 {
+    font-size: 2.8rem;
+    margin: 0 0 12px 0;
+    color: #2c5d63;
+    text-shadow: 2px 2px 6px #a6dcef;
+  }
+  .user-info {
+    font-size: 1.4rem;
+    color: #486b6f;
+    margin-bottom: 8px;
+  }
+  .coin-display {
+    font-size: 1.5rem;
+    color: #486b6f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .coin-display img {
+    height: 32px;
+    margin-left: 10px;
+  }
+  main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  button#draw-btn {
+    background: linear-gradient(145deg, #67b26f, #4ca2cd);
+    border: none;
+    border-radius: 30px;
+    color: white;
+    font-size: 1.6rem;
+    padding: 18px 60px;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(76, 162, 205, 0.5);
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+  }
+  button#draw-btn:hover {
+    background: linear-gradient(145deg, #4ca2cd, #67b26f);
+    box-shadow: 0 10px 28px rgba(76, 162, 205, 0.8);
+  }
+  footer {
+    margin-top: 40px;
+    font-size: 0.9rem;
+    color: #45615e;
+    text-align: center;
+  }
+  .fauna-shapes {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    opacity: 0.15;
+    width: 180px;
+    height: 180px;
+    background: url('https://cdn-icons-png.flaticon.com/512/616/616408.png') no-repeat center center;
+    background-size: contain;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+  <header>
+    <h1>Fauna Gacha Game</h1>
+    <div class="user-info" id="nickname-display"></div>
+    <div class="coin-display" title="Your coins">
+      Koin: <span id="coin-count">0</span>
+      <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="Coin icon" />
+    </div>
+  </header>
+  <main>
+    <button id="draw-btn">Draw</button>
+  </main>
+  <footer>
+    &copy; 2024 Fauna Gacha Game
+  </footer>
+  <div class="fauna-shapes"></div>
+
+<script>
+  const nickname = localStorage.getItem('faunaGachaNickname');
+  if (!nickname) {
+    // Not logged in, redirect to login page
+    window.location.href = 'login.html';
+  }
+
+  // Update nickname display
+  const nicknameDisplay = document.getElementById('nickname-display');
+  nicknameDisplay.textContent = 'Welcome, ' + nickname + '!';
+
+  // Display coins
+  const coinKey = 'faunaGachaCoins_' + nickname;
+  const coinCountElem = document.getElementById('coin-count');
+
+  function updateCoinDisplay() {
+    let coins = parseInt(localStorage.getItem(coinKey));
+    if (isNaN(coins)) {
+      coins = 100; // Fallback default if missing
+      localStorage.setItem(coinKey, coins);
+    }
+    coinCountElem.textContent = coins;
+  }
+
+  updateCoinDisplay();
+
+  document.getElementById('draw-btn').addEventListener('click', () => {
+    window.location.href = 'gacha.html';
+  });
+</script>
+</body>
+</html>
+
